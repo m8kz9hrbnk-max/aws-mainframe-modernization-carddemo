@@ -1,0 +1,389 @@
+{
+  "defaults": {
+    "account": {
+      "group": "SYNTHETIC",
+      "current_balance": "0.00",
+      "cycle_credit": "0.00",
+      "cycle_debit": "0.00",
+      "credit_limit": "1000.00",
+      "cash_credit_limit": "500.00",
+      "active": "Y",
+      "open_date": "2020-01-01",
+      "expiration_date": "2030-12-31",
+      "reissue_date": "2025-01-01",
+      "zip": "12345"
+    },
+    "transaction": {
+      "type": "01",
+      "category": "0001",
+      "source": "POS",
+      "description": "SYNTHETIC DAILY TRANSACTION",
+      "merchant_id": "123456789",
+      "merchant_name": "REFERENCE MERCHANT",
+      "merchant_city": "ANYTOWN",
+      "merchant_zip": "12345",
+      "original_timestamp": "2026-09-21-10.00.00.000000",
+      "processing_timestamp": ""
+    }
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "accounts": [
+        {"account_id": "00000000001"},
+        {"account_id": "00000000002"}
+      ],
+      "xrefs": [
+        {"card_number": "cardA", "account_id": "00000000001"},
+        {"card_number": "cardB", "account_id": "00000000002"}
+      ],
+      "categories": [
+        {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "10.00"}
+      ],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "100.00"},
+        {"transaction_id": "POST000000000002", "card_number": "cardA", "amount": "50.25"},
+        {"transaction_id": "POST000000000003", "card_number": "cardA", "type": "02", "category": "0002", "amount": "-30.00"},
+        {"transaction_id": "POST000000000004", "card_number": "cardB", "amount": "20.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 0,
+        "counts": {"processed": 4, "rejected": 0},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "120.25", "cycle_credit": "150.25", "cycle_debit": "-30.00"},
+          {"account_id": "00000000002", "current_balance": "20.00", "cycle_credit": "20.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "160.25"},
+          {"account_id": "00000000001", "type": "02", "category": "0002", "balance": "-30.00"},
+          {"account_id": "00000000002", "type": "01", "category": "0001", "balance": "20.00"}
+        ],
+        "transaction_ids": ["POST000000000001", "POST000000000002", "POST000000000003", "POST000000000004"],
+        "rejects": []
+      }
+    },
+    {
+      "name": "reject_100_invalid_card",
+      "accounts": [{"account_id": "00000000001"}],
+      "xrefs": [],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "missing-card", "amount": "10.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 4,
+        "counts": {"processed": 1, "rejected": 1},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "0.00", "cycle_credit": "0.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [],
+        "transaction_ids": [],
+        "rejects": [
+          {"input_seq": 1, "transaction_id": "POST000000000001", "reason_code": "0100", "reason_desc": "INVALID CARD NUMBER FOUND"}
+        ]
+      }
+    },
+    {
+      "name": "reject_101_missing_account",
+      "accounts": [],
+      "xrefs": [
+        {"card_number": "cardA", "account_id": "00000000099"}
+      ],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "10.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 4,
+        "counts": {"processed": 1, "rejected": 1},
+        "accounts": [],
+        "tran_cat_balances": [],
+        "transaction_ids": [],
+        "rejects": [
+          {"input_seq": 1, "transaction_id": "POST000000000001", "reason_code": "0101", "reason_desc": "ACCOUNT RECORD NOT FOUND"}
+        ]
+      }
+    },
+    {
+      "name": "overlimit_boundary",
+      "accounts": [
+        {"account_id": "00000000001", "credit_limit": "100.00", "cycle_credit": "90.00"},
+        {"account_id": "00000000002", "credit_limit": "100.00", "cycle_credit": "90.00"}
+      ],
+      "xrefs": [
+        {"card_number": "cardA", "account_id": "00000000001"},
+        {"card_number": "cardB", "account_id": "00000000002"}
+      ],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "10.01"},
+        {"transaction_id": "POST000000000002", "card_number": "cardB", "amount": "10.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 4,
+        "counts": {"processed": 2, "rejected": 1},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "0.00", "cycle_credit": "90.00", "cycle_debit": "0.00"},
+          {"account_id": "00000000002", "current_balance": "10.00", "cycle_credit": "100.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000002", "type": "01", "category": "0001", "balance": "10.00"}
+        ],
+        "transaction_ids": ["POST000000000002"],
+        "rejects": [
+          {"input_seq": 1, "transaction_id": "POST000000000001", "reason_code": "0102", "reason_desc": "OVERLIMIT TRANSACTION"}
+        ]
+      }
+    },
+    {
+      "name": "expiry_boundary",
+      "accounts": [
+        {"account_id": "00000000001", "expiration_date": "2026-09-20"},
+        {"account_id": "00000000002", "expiration_date": "2026-09-21"}
+      ],
+      "xrefs": [
+        {"card_number": "cardA", "account_id": "00000000001"},
+        {"card_number": "cardB", "account_id": "00000000002"}
+      ],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "10.00"},
+        {"transaction_id": "POST000000000002", "card_number": "cardB", "amount": "10.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 4,
+        "counts": {"processed": 2, "rejected": 1},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "0.00", "cycle_credit": "0.00", "cycle_debit": "0.00"},
+          {"account_id": "00000000002", "current_balance": "10.00", "cycle_credit": "10.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000002", "type": "01", "category": "0001", "balance": "10.00"}
+        ],
+        "transaction_ids": ["POST000000000002"],
+        "rejects": [
+          {"input_seq": 1, "transaction_id": "POST000000000001", "reason_code": "0103", "reason_desc": "TRANSACTION RECEIVED AFTER ACCT EXPIRATION"}
+        ]
+      }
+    },
+    {
+      "name": "reject_102_and_103",
+      "accounts": [
+        {"account_id": "00000000001", "credit_limit": "100.00", "cycle_credit": "90.00", "expiration_date": "2026-09-20"}
+      ],
+      "xrefs": [{"card_number": "cardA", "account_id": "00000000001"}],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "20.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 4,
+        "counts": {"processed": 1, "rejected": 1},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "0.00", "cycle_credit": "90.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [],
+        "transaction_ids": [],
+        "rejects": [
+          {"input_seq": 1, "transaction_id": "POST000000000001", "reason_code": "0103", "reason_desc": "TRANSACTION RECEIVED AFTER ACCT EXPIRATION"}
+        ]
+      }
+    },
+    {
+      "name": "order_dependency",
+      "accounts": [
+        {"account_id": "00000000001", "credit_limit": "100.00"},
+        {"account_id": "00000000002", "credit_limit": "100.00"}
+      ],
+      "xrefs": [
+        {"card_number": "cardA", "account_id": "00000000001"},
+        {"card_number": "cardB", "account_id": "00000000002"}
+      ],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "60.00"},
+        {"transaction_id": "POST000000000002", "card_number": "cardB", "amount": "1.00"},
+        {"transaction_id": "POST000000000003", "card_number": "cardA", "amount": "50.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 4,
+        "counts": {"processed": 3, "rejected": 1},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "60.00", "cycle_credit": "60.00", "cycle_debit": "0.00"},
+          {"account_id": "00000000002", "current_balance": "1.00", "cycle_credit": "1.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "60.00"},
+          {"account_id": "00000000002", "type": "01", "category": "0001", "balance": "1.00"}
+        ],
+        "transaction_ids": ["POST000000000001", "POST000000000002"],
+        "rejects": [
+          {"input_seq": 3, "transaction_id": "POST000000000003", "reason_code": "0102", "reason_desc": "OVERLIMIT TRANSACTION"}
+        ]
+      }
+    },
+    {
+      "name": "payment_consumes_limit",
+      "accounts": [{"account_id": "00000000001", "credit_limit": "100.00"}],
+      "xrefs": [{"card_number": "cardA", "account_id": "00000000001"}],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "-50.00"},
+        {"transaction_id": "POST000000000002", "card_number": "cardA", "amount": "60.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 4,
+        "counts": {"processed": 2, "rejected": 1},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "-50.00", "cycle_credit": "0.00", "cycle_debit": "-50.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "-50.00"}
+        ],
+        "transaction_ids": ["POST000000000001"],
+        "rejects": [
+          {"input_seq": 2, "transaction_id": "POST000000000002", "reason_code": "0102", "reason_desc": "OVERLIMIT TRANSACTION"}
+        ]
+      }
+    },
+    {
+      "name": "temp_bal_truncation",
+      "accounts": [
+        {"account_id": "00000000001", "credit_limit": "1000000000.00", "cycle_credit": "1000000000.00"},
+        {"account_id": "00000000002", "credit_limit": "1000.00"}
+      ],
+      "xrefs": [
+        {"card_number": "cardA", "account_id": "00000000001"},
+        {"card_number": "cardB", "account_id": "00000000002"}
+      ],
+      "categories": [
+        {"account_id": "00000000002", "type": "01", "category": "0001", "balance": "999999999.99"}
+      ],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "0.01"},
+        {"transaction_id": "POST000000000002", "card_number": "cardB", "amount": "0.02"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 0,
+        "counts": {"processed": 2, "rejected": 0},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "0.01", "cycle_credit": "1000000000.01", "cycle_debit": "0.00"},
+          {"account_id": "00000000002", "current_balance": "0.02", "cycle_credit": "0.02", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "0.01"},
+          {"account_id": "00000000002", "type": "01", "category": "0001", "balance": "0.01"}
+        ],
+        "transaction_ids": ["POST000000000001", "POST000000000002"],
+        "rejects": []
+      }
+    },
+    {
+      "name": "inactive_account",
+      "accounts": [{"account_id": "00000000001", "active": "N"}],
+      "xrefs": [{"card_number": "cardA", "account_id": "00000000001"}],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "10.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 0,
+        "counts": {"processed": 1, "rejected": 0},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "10.00", "cycle_credit": "10.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "10.00"}
+        ],
+        "transaction_ids": ["POST000000000001"],
+        "rejects": []
+      }
+    },
+    {
+      "name": "empty",
+      "accounts": [{"account_id": "00000000001", "current_balance": "5.00"}],
+      "xrefs": [{"card_number": "cardA", "account_id": "00000000001"}],
+      "categories": [
+        {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "3.00"}
+      ],
+      "transactions": [],
+      "expected": {
+        "status": "success",
+        "return_code": 0,
+        "counts": {"processed": 0, "rejected": 0},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "5.00", "cycle_credit": "0.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "3.00"}
+        ],
+        "transaction_ids": [],
+        "rejects": []
+      }
+    },
+    {
+      "name": "duplicate_tran_id",
+      "accounts": [{"account_id": "00000000001"}],
+      "xrefs": [{"card_number": "cardA", "account_id": "00000000001"}],
+      "categories": [],
+      "transactions": [
+        {"transaction_id": "DUPLICATE000001", "card_number": "cardA", "amount": "10.00"},
+        {"transaction_id": "DUPLICATE000001", "card_number": "cardA", "amount": "20.00"}
+      ],
+      "expected": {
+        "status": "error",
+        "return_code": 99,
+        "error_kind": "DUPLICATE_TRANSACTION_ID",
+        "counts": {"processed": null, "rejected": null},
+        "accounts": null,
+        "tran_cat_balances": null,
+        "transaction_ids": null,
+        "rejects": null,
+        "partial_state": {
+          "accounts": [
+            {"account_id": "00000000001", "current_balance": "30.00", "cycle_credit": "30.00", "cycle_debit": "0.00"}
+          ],
+          "tran_cat_balances": [
+            {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "30.00"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "existing_transact",
+      "accounts": [{"account_id": "00000000001"}],
+      "xrefs": [{"card_number": "cardA", "account_id": "00000000001"}],
+      "categories": [],
+      "preseed_transactions": [
+        {"transaction_id": "OLD0000000000001", "card_number": "old-card", "amount": "1.00"}
+      ],
+      "transactions": [
+        {"transaction_id": "POST000000000001", "card_number": "cardA", "amount": "5.00"}
+      ],
+      "expected": {
+        "status": "success",
+        "return_code": 0,
+        "counts": {"processed": 1, "rejected": 0},
+        "accounts": [
+          {"account_id": "00000000001", "current_balance": "5.00", "cycle_credit": "5.00", "cycle_debit": "0.00"}
+        ],
+        "tran_cat_balances": [
+          {"account_id": "00000000001", "type": "01", "category": "0001", "balance": "5.00"}
+        ],
+        "transaction_ids": ["POST000000000001"],
+        "preexisting_transaction_survives": false,
+        "rejects": []
+      }
+    }
+  ]
+}

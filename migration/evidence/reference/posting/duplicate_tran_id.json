@@ -1,0 +1,43 @@
+{
+  "case": "duplicate_tran_id",
+  "upstream_commit": "59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e",
+  "status": "error",
+  "error_kind": "DUPLICATE_TRANSACTION_ID",
+  "return_code": 99,
+  "stdout": "START OF EXECUTION OF PROGRAM CBTRN02C\nTCATBAL record not found for key : 00000000001010001.. Creating.\nERROR WRITING TO TRANSACTION FILE\nFILE STATUS IS: NNNN0022\nABENDING PROGRAM\nREFERENCE ABEND STUB: +0000000999\n",
+  "stderr": "libcob: warning: implicit CLOSE of TCATBAL-FILE ('TCATBALF')\nlibcob: warning: implicit CLOSE of ACCOUNT-FILE ('ACCTFILE')\nlibcob: warning: implicit CLOSE of DALYREJS-FILE ('DALYREJS')\nlibcob: warning: implicit CLOSE of XREF-FILE ('XREFFILE')\nlibcob: warning: implicit CLOSE of TRANSACT-FILE ('TRANFILE')\nlibcob: warning: implicit CLOSE of DALYTRAN-FILE ('DALYTRAN')\n",
+  "counts": {
+    "processed": null,
+    "rejected": null
+  },
+  "accounts": null,
+  "tran_cat_balances": null,
+  "transactions": null,
+  "rejects": null,
+  "partial_state": {
+    "accounts": [
+      {
+        "account_id": "00000000001",
+        "group": "SYNTHETIC",
+        "current_balance": "30.00",
+        "cycle_credit": "30.00",
+        "cycle_debit": "0.00",
+        "active": "Y",
+        "credit_limit": "1000.00",
+        "cash_credit_limit": "500.00",
+        "open_date": "2020-01-01",
+        "expiration_date": "2030-12-31",
+        "reissue_date": "2025-01-01",
+        "zip": "12345"
+      }
+    ],
+    "tran_cat_balances": [
+      {
+        "account_id": "00000000001",
+        "type": "01",
+        "category": "0001",
+        "balance": "30.00"
+      }
+    ]
+  }
+}

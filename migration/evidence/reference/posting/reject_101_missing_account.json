@@ -1,0 +1,27 @@
+{
+  "case": "reject_101_missing_account",
+  "upstream_commit": "59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e",
+  "status": "success",
+  "error_kind": null,
+  "return_code": 4,
+  "stdout": "START OF EXECUTION OF PROGRAM CBTRN02C\nTRANSACTIONS PROCESSED :000000001\nTRANSACTIONS REJECTED  :000000001\nEND OF EXECUTION OF PROGRAM CBTRN02C\nCBTRN02C RETURN-CODE: +00004\n",
+  "stderr": "",
+  "counts": {
+    "processed": 1,
+    "rejected": 1
+  },
+  "accounts": [],
+  "tran_cat_balances": [],
+  "transactions": [],
+  "rejects": [
+    {
+      "input_seq": 1,
+      "transaction_id": "POST000000000001",
+      "card_number": "cardA",
+      "amount": "10.00",
+      "original_timestamp": "2026-09-21-10.00.00.000000",
+      "reason_code": "0101",
+      "reason_desc": "ACCOUNT RECORD NOT FOUND"
+    }
+  ]
+}

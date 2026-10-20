@@ -1,0 +1,42 @@
+{
+  "case": "reject_100_invalid_card",
+  "upstream_commit": "59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e",
+  "status": "success",
+  "error_kind": null,
+  "return_code": 4,
+  "stdout": "START OF EXECUTION OF PROGRAM CBTRN02C\nTRANSACTIONS PROCESSED :000000001\nTRANSACTIONS REJECTED  :000000001\nEND OF EXECUTION OF PROGRAM CBTRN02C\nCBTRN02C RETURN-CODE: +00004\n",
+  "stderr": "",
+  "counts": {
+    "processed": 1,
+    "rejected": 1
+  },
+  "accounts": [
+    {
+      "account_id": "00000000001",
+      "group": "SYNTHETIC",
+      "current_balance": "0.00",
+      "cycle_credit": "0.00",
+      "cycle_debit": "0.00",
+      "active": "Y",
+      "credit_limit": "1000.00",
+      "cash_credit_limit": "500.00",
+      "open_date": "2020-01-01",
+      "expiration_date": "2030-12-31",
+      "reissue_date": "2025-01-01",
+      "zip": "12345"
+    }
+  ],
+  "tran_cat_balances": [],
+  "transactions": [],
+  "rejects": [
+    {
+      "input_seq": 1,
+      "transaction_id": "POST000000000001",
+      "card_number": "missing-card",
+      "amount": "10.00",
+      "original_timestamp": "2026-09-21-10.00.00.000000",
+      "reason_code": "0100",
+      "reason_desc": "INVALID CARD NUMBER FOUND"
+    }
+  ]
+}

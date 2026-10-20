@@ -1,0 +1,126 @@
+{
+  "case": "baseline",
+  "upstream_commit": "59cc6c2fd7ebd7ef7925cad552a01a4b8b6e4d5e",
+  "status": "success",
+  "error_kind": null,
+  "return_code": 0,
+  "stdout": "START OF EXECUTION OF PROGRAM CBTRN02C\nTCATBAL record not found for key : 00000000001020002.. Creating.\nTCATBAL record not found for key : 00000000002010001.. Creating.\nTRANSACTIONS PROCESSED :000000004\nTRANSACTIONS REJECTED  :000000000\nEND OF EXECUTION OF PROGRAM CBTRN02C\nCBTRN02C RETURN-CODE: +00000\n",
+  "stderr": "",
+  "counts": {
+    "processed": 4,
+    "rejected": 0
+  },
+  "accounts": [
+    {
+      "account_id": "00000000001",
+      "group": "SYNTHETIC",
+      "current_balance": "120.25",
+      "cycle_credit": "150.25",
+      "cycle_debit": "-30.00",
+      "active": "Y",
+      "credit_limit": "1000.00",
+      "cash_credit_limit": "500.00",
+      "open_date": "2020-01-01",
+      "expiration_date": "2030-12-31",
+      "reissue_date": "2025-01-01",
+      "zip": "12345"
+    },
+    {
+      "account_id": "00000000002",
+      "group": "SYNTHETIC",
+      "current_balance": "20.00",
+      "cycle_credit": "20.00",
+      "cycle_debit": "0.00",
+      "active": "Y",
+      "credit_limit": "1000.00",
+      "cash_credit_limit": "500.00",
+      "open_date": "2020-01-01",
+      "expiration_date": "2030-12-31",
+      "reissue_date": "2025-01-01",
+      "zip": "12345"
+    }
+  ],
+  "tran_cat_balances": [
+    {
+      "account_id": "00000000001",
+      "type": "01",
+      "category": "0001",
+      "balance": "160.25"
+    },
+    {
+      "account_id": "00000000001",
+      "type": "02",
+      "category": "0002",
+      "balance": "-30.00"
+    },
+    {
+      "account_id": "00000000002",
+      "type": "01",
+      "category": "0001",
+      "balance": "20.00"
+    }
+  ],
+  "transactions": [
+    {
+      "transaction_id": "POST000000000001",
+      "type": "01",
+      "category": "0001",
+      "source": "POS",
+      "description": "SYNTHETIC DAILY TRANSACTION",
+      "amount": "100.00",
+      "card_number": "cardA",
+      "original_timestamp": "2026-09-21-10.00.00.000000",
+      "processing_timestamp": "2026-09-22-12.00.00.000000",
+      "merchant_id": "123456789",
+      "merchant_name": "REFERENCE MERCHANT",
+      "merchant_city": "ANYTOWN",
+      "merchant_zip": "12345"
+    },
+    {
+      "transaction_id": "POST000000000002",
+      "type": "01",
+      "category": "0001",
+      "source": "POS",
+      "description": "SYNTHETIC DAILY TRANSACTION",
+      "amount": "50.25",
+      "card_number": "cardA",
+      "original_timestamp": "2026-09-21-10.00.00.000000",
+      "processing_timestamp": "2026-09-22-12.00.00.000000",
+      "merchant_id": "123456789",
+      "merchant_name": "REFERENCE MERCHANT",
+      "merchant_city": "ANYTOWN",
+      "merchant_zip": "12345"
+    },
+    {
+      "transaction_id": "POST000000000003",
+      "type": "02",
+      "category": "0002",
+      "source": "POS",
+      "description": "SYNTHETIC DAILY TRANSACTION",
+      "amount": "-30.00",
+      "card_number": "cardA",
+      "original_timestamp": "2026-09-21-10.00.00.000000",
+      "processing_timestamp": "2026-09-22-12.00.00.000000",
+      "merchant_id": "123456789",
+      "merchant_name": "REFERENCE MERCHANT",
+      "merchant_city": "ANYTOWN",
+      "merchant_zip": "12345"
+    },
+    {
+      "transaction_id": "POST000000000004",
+      "type": "01",
+      "category": "0001",
+      "source": "POS",
+      "description": "SYNTHETIC DAILY TRANSACTION",
+      "amount": "20.00",
+      "card_number": "cardB",
+      "original_timestamp": "2026-09-21-10.00.00.000000",
+      "processing_timestamp": "2026-09-22-12.00.00.000000",
+      "merchant_id": "123456789",
+      "merchant_name": "REFERENCE MERCHANT",
+      "merchant_city": "ANYTOWN",
+      "merchant_zip": "12345"
+    }
+  ],
+  "rejects": []
+}

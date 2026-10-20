@@ -1,0 +1,41 @@
+{
+  "description": "Frozen CBTRN02C reference, synthetic fixtures, tests, and observed GnuCOBOL outputs. Review this manifest itself against demo-baseline; hashes are not an anti-tampering guarantee.",
+  "cases": [
+    "baseline",
+    "reject_100_invalid_card",
+    "reject_101_missing_account",
+    "overlimit_boundary",
+    "expiry_boundary",
+    "reject_102_and_103",
+    "order_dependency",
+    "payment_consumes_limit",
+    "temp_bal_truncation",
+    "inactive_account",
+    "empty",
+    "duplicate_tran_id",
+    "existing_transact"
+  ],
+  "sha256": {
+    "docs/CBTRN02C-ANALYSIS.md": "0384527a51b5449d969ad54d67aab43da25e3600283112adb4812857a9b714ae",
+    "fixtures/posting_cases.json": "4a87957edaa33f9960f9e63304f44364ca5d821c9b9b0cf86e9d2c54e944641e",
+    "reference/posting_driver.cbl": "50fd0cc899382c8c3791a5a6b7e9b807f846af84da488a81b33c16e5ce1291a8",
+    "reference/run_posting_reference.py": "d18d38a17498183373d042c4d996ed2cb388e1941cb1ada19a111c096269d058",
+    "tests/test_posting_reference.py": "3ed76e5f75d96e73ff538e6c381b0eeb0a4070bdacd31738f355bee718e48e21",
+    "scripts/check_source_cbtrn02c.py": "4dbc0be364d377f530a609ec6c9498f28171dfddf2b3a1414db591aabc62a636",
+    "reference/README-CBTRN02C.md": "54e18307294fd355665e4f73362ff70195a44f112e610ddf92306b5cef96fc82",
+    "evidence/reference/posting/baseline.json": "3469a3f556b08d47b33ae460f60761fc36a7e9826cdfb8b39f99a78c3ba4004e",
+    "evidence/reference/posting/reject_100_invalid_card.json": "e5da95a54864e254e366c74acd555c7c57f414efd1f470e5d0134f041afd0390",
+    "evidence/reference/posting/reject_101_missing_account.json": "261b3d63cd148f3fba467d86a40d3011fc3fbbe2426ca45b28c934bd5ff70d27",
+    "evidence/reference/posting/overlimit_boundary.json": "0c9b4d1bb9d16b3d25fc5cada7c046713f4309a228487dcf488d28c261130110",
+    "evidence/reference/posting/expiry_boundary.json": "b57d763873497fc8fb2d521bc749c3c11a88feb22a210c50dfc631ffb70c4ba5",
+    "evidence/reference/posting/reject_102_and_103.json": "e8f8c2945ac613ede3508a2da402e7b3af599337bf8144fe49a8a353e8ec03d8",
+    "evidence/reference/posting/order_dependency.json": "bdf068346daf7fd6d1b5109e3b8823f4ad5d6f466c0381a5b5f8f5d5fd9de3a1",
+    "evidence/reference/posting/payment_consumes_limit.json": "21b5eb8ddf7154119c9914e7a073e710ba5fb8bf4da9e7bdf535900969851d5c",
+    "evidence/reference/posting/temp_bal_truncation.json": "ad5f9a996184c5571325c9acd7e52fda1a53a9e3c1c7632c39e24ebe6799f928",
+    "evidence/reference/posting/inactive_account.json": "dcf8e34ab64fd2dd8da76f82e1dadd2befd22858455cddfeb3c3d62fcff52952",
+    "evidence/reference/posting/empty.json": "0067c04c709290b3feac54b66ba4fe7ae851d816f2a9f0c64f1a9dddeaaa7b99",
+    "evidence/reference/posting/duplicate_tran_id.json": "99a6f9f9827e4c00a6aef133c2c10cdbc49d7210e6d80c06e7b660a19e912b7e",
+    "evidence/reference/posting/existing_transact.json": "706ebc15e41bbf790103480e111e9b470148d7015bf6962c07849571c3684b42",
+    "evidence/reference/posting/pytest.txt": "94dddfce2b1ed486a9135985caef4f9e96a60e29d6688249e1d5de9a61dced90"
+  }
+}
